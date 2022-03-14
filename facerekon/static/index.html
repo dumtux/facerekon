@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test page for the Face Recognition REST API</title>
+    <style type="text/css">
+        body {
+            background: #333;
+        }
+        .btn {
+            padding: 8px 32px;
+            background: #4b86b4;
+            color: white;
+            border: white 1px grey;
+            border: 1px solid lightgrey;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn:active {
+            background: royalblue;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .custom-file-upload {
+        }
+
+        img {
+        	width: 10vw;
+        }
+
+        .upload {
+            max-width: 800px;
+            height: calc(50vh - 40px);
+            margin: 20px auto;
+            padding: 16px;
+            padding-top: 0px;
+            padding-bottom: 0px;
+            text-align: center;
+            background: white;
+            border: solid 1px darkgrey;
+            border-radius: 8px;
+        }
+
+        .result {
+            overflow: auto;
+            margin-top: 16px;
+            border: solid 1px darkgrey;
+            height: calc(50vh - 160px);
+        }
+        .result > div {
+            float: left;
+            height: 200px;
+            width: 160px;
+            margin: 8px;
+            border: solid 1px darkgrey;
+        }
+        .result > div img {
+            width: 160px;
+            height: 160px;
+            margin-bottom: 0;
+            object-fit: contain;
+        }
+        .result > div p {
+            margin-top: 0;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="upload">
+    <h2>Upload named photos</h2>
+
+    <div id="btn-upload">
+        <label for="file-upload-named" class="btn custom-file-upload">Upload</label>
+        <input id="file-upload-named" type="file" multiple="multiple" />
+    </div>
+
+    <div id="named-result" class="result">
+    </div>
+</div>
+
+<div class="upload">
+    <h2>Upload unnamed photos</h2>
+
+    <div id="btn-upload">
+        <label for="file-upload-unnamed" class="btn custom-file-upload">Upload</label>
+        <input id="file-upload-unnamed" type="file" multiple="multiple" />
+    </div>
+
+    <div id="unnamed-result" class="result">
+    </div>
+</div>
+
+<script type="text/javascript">
+    const uploadNamedImages = document.querySelector('#file-upload-named')
+    const uploadUnnamedImages = document.querySelector('#file-upload-unnamed')
+    const resultNamedImages = document.querySelector('#named-result')
+    const resultUnnamedImages = document.querySelector('#unnamed-result')
+
+    const showNamedImages = (data) => {
+        resultNamedImages.innerHTML = ''
+        let html = ''
+        for (fname of data.files) {
+            html += '<div><img src="/api/download/named/' + fname + '"><p>' + fname + '</p></div>'
+        }
+        resultNamedImages.innerHTML = html
+    }
+
+    const showUnnamedImages = (data) => {
+        resultUnnamedImages.innerHTML = ''
+        let html = ''
+        for (d of data) {
+            html += '<div><img src="/api/download/unnamed/' + d.original + '"><p>' + d.proposed + '</p></div>'
+        }
+        resultUnnamedImages.innerHTML = html
+    }
+
+    uploadNamedImages.onchange = () => {
+        const formData = new FormData()
+        for (const file of uploadNamedImages.files)
+            formData.append('files', file)
+        fetch('/api/upload/named', {method: 'POST', body: formData})
+            .then(response => response.json())
+            .then(data => { showNamedImages(data) })
+            .catch(error => { console.log(data) })
+    }
+
+    uploadUnnamedImages.onchange = () => {
+        const formData = new FormData()
+        for (const file of uploadUnnamedImages.files)
+            formData.append('files', file)
+        fetch('/api/upload/unnamed', {method: 'POST', body: formData})
+            .then(response => response.json())
+            .then(data => { showUnnamedImages(data) })
+            .catch(error => { console.log(data) })
+    }
+</script>
+
+</body>
+</html>

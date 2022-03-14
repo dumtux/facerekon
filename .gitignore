@@ -1,0 +1,6 @@
+__pycache__
+venv
+survey/
+test_data/
+facerekon/images-named/
+facerekon/images-unnamed/

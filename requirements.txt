@@ -1,0 +1,9 @@
+click
+Pillow
+face-recognition
+
+aiofiles
+fastapi
+python-multipart
+uvicorn
+gunicorn
